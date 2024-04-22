@@ -1,7 +1,10 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import TodoItem from "../components/TodoItem";
-import { sanmpleTodo } from "../mocks/todo.mocks";
+import {
+  sanmpleTodowithTrueStatus,
+  sanmpleTodowithFalseStatus,
+} from "../mocks/todo.mocks";
 
 const handleUpdateTodo = jest.fn((todo) => {
   console.log(todo);
@@ -9,45 +12,60 @@ const handleUpdateTodo = jest.fn((todo) => {
 
 const handleDeleteTodo = jest.fn((id) => console.log(id));
 
-function renderComponent() {
-  render(
-    <TodoItem
-      updateTodo={handleUpdateTodo}
-      deleteTodo={handleDeleteTodo}
-      todo={sanmpleTodo}
-    />
-  );
+function renderComponent(status: boolean) {
+  status
+    ? render(
+        <TodoItem
+          updateTodo={handleUpdateTodo}
+          deleteTodo={handleDeleteTodo}
+          todo={sanmpleTodowithTrueStatus}
+        />
+      )
+    : render(
+        <TodoItem
+          updateTodo={handleUpdateTodo}
+          deleteTodo={handleDeleteTodo}
+          todo={sanmpleTodowithFalseStatus}
+        />
+      );
 }
 
 describe("Todo Item test cases", () => {
   it("Should render Todo Text", () => {
-    renderComponent();
+    renderComponent(false);
     const todoText = screen.getByText("Daily early routine");
     expect(todoText).toBeInTheDocument();
   });
 
   it("Should render Todo description Text", () => {
-    renderComponent();
+    renderComponent(false);
     const descriptionText = screen.getByText("Wake up at 6 AM");
     expect(descriptionText).toBeInTheDocument();
   });
 
   it("Should render Complete Button", () => {
-    renderComponent();
+    renderComponent(false);
     const completeButton = screen.getByRole("button", { name: "Complete" });
 
     expect(completeButton).toBeInTheDocument();
   });
 
+  it("Should not render Complete Button when todo status is true", () => {
+    renderComponent(true);
+    const completeButton = screen.queryByRole("button", { name: "Complete" });
+
+    expect(completeButton).toBe(null);
+  });
+
   it("Should render Delete Button", () => {
-    renderComponent();
+    renderComponent(false);
     const deleteButton = screen.getByRole("button", { name: "Delete" });
 
     expect(deleteButton).toBeInTheDocument();
   });
 
   it("Should call handleUpdateTodo function when Complete Button is Clicked", () => {
-    renderComponent();
+    renderComponent(false);
 
     const completeButton = screen.getByRole("button", { name: "Complete" });
 
@@ -57,7 +75,7 @@ describe("Todo Item test cases", () => {
   });
 
   it("Should call handleDeleteTodo function when Delete Button is Clicked", () => {
-    renderComponent();
+    renderComponent(false);
 
     const deleteButton = screen.getByRole("button", { name: "Delete" });
 

@@ -8,7 +8,7 @@ type Props = TodoProps & {
 const Todo: React.FC<Props> = ({ todo, updateTodo, deleteTodo }) => {
   const checkTodo: string = todo.status ? `line-through` : "";
   return (
-    <div className="Card">
+    <div className="Card" data-testid="todoitem">
       <div className="Card--text">
         <h1 className={checkTodo}>{todo.name}</h1>
         <span className={checkTodo}>{todo.description}</span>
@@ -17,7 +17,7 @@ const Todo: React.FC<Props> = ({ todo, updateTodo, deleteTodo }) => {
         {!todo.status && (
           <button
             onClick={() => updateTodo(todo)}
-            className={todo.status ? `hide-button` : "Card--button__done"}
+            className={"Card--button__done"}
           >
             Complete
           </button>
